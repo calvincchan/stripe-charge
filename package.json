@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon localtest.js"
+    "dev": "nodemon localtest.js",
+    "web": "http-server web/"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
+    "http-server": "^14.1.1",
     "nodemon": "^2.0.21"
   }
 }

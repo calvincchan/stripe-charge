@@ -1,0 +1,136 @@
+<div class="info-card">
+  <section id="paymentStep1">
+
+    <div>Invoice No.</div>
+    <input id="inputInvoiceNo" name="invoiceNo" placeholder="please enter">
+    <p></p>
+
+    <div>Amount</div>
+    <input id="inputInvoiceTotal" name="invoiceTotal" type="number" placeholder="please enter">
+    <p></p>
+
+    <div>Currency</div>
+    <div style="line-height:55px">
+      <span style="margin:0 10px"><input id="inputCurrency1" type="radio" name="inputCurrency" style="height:auto" value="HKD" checked="checked"> <label for="inputCurrency1">HKD</label></span>
+      <span style="margin:0 10px"><input id="inputCurrency2" type="radio" name="inputCurrency" style="height:auto" value="USD"> <label for="inputCurrency2">USD</label></span>
+    </div>
+    <p></p>
+
+    <div>5% Service Fee <span id="inputServiceFee">--</span></div>
+    <p></p>
+
+    <div>Total <span id="inputTotal">--</span></div>
+    <p></p>
+    <p style="margin:40px 0 0 0">
+      <button id="generateButton">Next→</button>
+    </p>
+  </section>
+  <section id="paymentStep2" style="display:none">
+    <p><span class="previewDescription">--</span></p>
+    <p>Amount <span class="previewSubtotal">--</span> <span class="previewCurrency">--</span></p>
+    <p>Service Fee <span class="previewHandlingFee">--</span> <span class="previewCurrency">--</span></p>
+    <p>Total <span class="previewTotal">--</span> <span class="previewCurrency">--</span></p>
+    <p style="margin:20px 0">
+      <button style="width:100%" id="stripeButton">💳 Pay by Credit Card</button>
+    </p>
+    <p></p>
+  </section>
+  <section id="paymentSuccess" style="display:none;padding:100px 0;text-align:center;">
+    <h3>✨ Thank you for the payment.。</h3>
+    <div><span class="previewDescription">--</span></div>
+  </section>
+  <section id="paymentError" style="display:none;padding:100px 0;text-align:center;">
+    <h3>🚨 We were unable to charge your credit card. Please contact support.</h3>
+    <div><span class="previewDescription">--</span></div>
+  </section>
+</div>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+<script src="./config.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+  jQuery("#inputInvoiceTotal").on("keyup", function (event) {
+    var _serviceFee = Number(jQuery(this).val()) * 0.05;
+    var _total = Number(jQuery(this).val()) * 1.05;
+    jQuery("#inputServiceFee").html(_serviceFee.toFixed(2));
+    jQuery("#inputTotal").html(_total.toFixed(2));
+  });
+
+  jQuery("#generateButton").on("click", function (event) {
+    /** 1: validation */
+    // TODO
+
+    /** 2: before generating button */
+    jQuery("#paymentStep1").hide();
+    jQuery("#paymentStep2").show();
+    var _subtotal = Number(jQuery("#inputInvoiceTotal").val()).toFixed(2);
+    var _handlingFee = Number(jQuery("#inputInvoiceTotal").val() * 0.05).toFixed(2);
+    var _total = Number(jQuery("#inputInvoiceTotal").val() * 1.05).toFixed(2);
+    var _currency = jQuery("input[name=inputCurrency]:checked").val() || "HKD";
+    var _description = config.COMPANY_NAME + " Invoice " + (jQuery("#inputInvoiceNo").val() || "N/A");
+    jQuery(".previewDescription").html(_description);
+    jQuery(".previewSubtotal").html(_subtotal);
+    jQuery(".previewHandlingFee").html(_handlingFee);
+    jQuery(".previewTotal").html(_total);
+    jQuery(".previewCurrency").html(_currency);
+
+    /** 3: Stripe Button */
+    var stripeChargeObject = {
+      name: config.COMPANY_NAME,
+      description: _description,
+      currency: _currency,
+      amount: Math.round(Number(_total) * 100)
+    };
+    var handler = StripeCheckout.configure({
+      key: config.STRIPE_KEY,
+      image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+      locale: config.LOCALE,
+      token: function (stripeToken) {
+        // You can access the token ID with `token.id`.
+        // Get the token ID to your server-side code for use.
+        jQuery.ajax({
+          type: "POST",
+          url: config.STRIPE_ENDPOINT,
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify({ stripeChargeObject, stripeToken }),
+          success: function () {
+            jQuery("#paymentStep2").hide();
+            jQuery("#paymentSuccess").show();
+          },
+          error: function () {
+            jQuery("#paymentStep2").hide();
+            jQuery("#paymentError").show();
+          }
+        });
+      }
+    });
+
+    document.getElementById('stripeButton').addEventListener('click', function (e) {
+      /** Open Checkout with further options: */
+      handler.open(stripeChargeObject);
+      e.preventDefault();
+    });
+
+    /** Close Checkout on page navigation: */
+    window.addEventListener('popstate', function () {
+      handler.close();
+    });
+  });
+
+  var data = { "stripeChargeObject": { "name": "ABC Company", "description": "ABC Company Invoice 123", "currency": "HKD", "amount": 12915 }, "stripeToken": { "id": "tok_1MjpWRKTVzBhQcQiQXSjK3Qw", "object": "token", "card": { "id": "card_1MjpWRKTVzBhQcQi8xrkFXMt", "object": "card", "address_city": null, "address_country": null, "address_line1": null, "address_line1_check": null, "address_line2": null, "address_state": null, "address_zip": null, "address_zip_check": null, "brand": "Visa", "country": "US", "cvc_check": "unchecked", "dynamic_last4": null, "exp_month": 12, "exp_year": 2034, "funding": "credit", "last4": "4242", "name": "hello@calvin-c.com", "tokenization_method": null }, "client_ip": "192.47.255.14", "created": 1678391587, "email": "hello@calvin-c.com", "livemode": false, "type": "card", "used": false } };
+  jQuery.ajax({
+    type: "POST",
+    url: config.STRIPE_ENDPOINT,
+    dataType: 'json',
+    contentType: 'application/json',
+    data,
+    success: function () {
+      jQuery("#paymentStep2").hide();
+      jQuery("#paymentSuccess").show();
+    },
+    error: function () {
+      jQuery("#paymentStep2").hide();
+      jQuery("#paymentError").show();
+    }
+  });
+</script>
