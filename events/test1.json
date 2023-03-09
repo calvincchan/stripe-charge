@@ -1,0 +1,37 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/",
+  "rawQueryString": "",
+  "headers": {
+    "accept-encoding": "gzip, deflate",
+    "content-length": "16",
+    "content-type": "application/json",
+    "host": "fnq5fc0lg9.execute-api.ap-southeast-1.amazonaws.com",
+    "user-agent": "vscode-restclient",
+    "x-amzn-trace-id": "(redacted)",
+    "x-forwarded-for": "(redacted)",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
+  },
+  "requestContext": {
+    "accountId": "(redacted)",
+    "apiId": "(redacted)",
+    "domainName": "(redacted)",
+    "domainPrefix": "(redacted)",
+    "http": {
+      "method": "POST",
+      "path": "/",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "59.149.178.140",
+      "userAgent": "vscode-restclient"
+    },
+    "requestId": "(redacted)",
+    "routeKey": "$default",
+    "stage": "$default",
+    "time": "25/Sep/2021:23:31:12 +0000",
+    "timeEpoch": 1632612672008
+  },
+  "body": "{\"stripeChargeObject\":{\"name\":\"ABC Company\",\"description\":\"ABC Company Invoice 120\",\"currency\":\"HKD\",\"amount\":12600},\"stripeToken\":{\"id\":\"tok_1MjU81KTVzBhQcQiTkTEP5w9\",\"object\":\"token\",\"card\":{\"id\":\"card_1MjU81KTVzBhQcQiuv5NbfJO\",\"object\":\"card\",\"address_city\":null,\"address_country\":null,\"address_line1\":null,\"address_line1_check\":null,\"address_line2\":null,\"address_state\":null,\"address_zip\":null,\"address_zip_check\":null,\"brand\":\"Visa\",\"country\":\"US\",\"cvc_check\":\"unchecked\",\"dynamic_last4\":null,\"exp_month\":12,\"exp_year\":2034,\"funding\":\"credit\",\"last4\":\"4242\",\"name\":\"hello@calvin-c.com\",\"tokenization_method\":null},\"client_ip\":\"196.247.24.130\",\"created\":1678309349,\"email\":\"hello@calvin-c.com\",\"livemode\":false,\"type\":\"card\",\"used\":false}}",
+  "isBase64Encoded": false
+}
