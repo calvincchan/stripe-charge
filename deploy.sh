@@ -3,5 +3,5 @@ ZIP_FILE=deploy.zip
 TIMESTAMP=`date +"%Y%m%d-%H%M%S"`
 
 zip -j -q $ZIP_FILE ./src/index.js
-aws lambda update-function-code --function-name $FUNC_ARN --zip-file "fileb://$ZIP_FILE" > log/deploy-output.json
+aws lambda update-function-code --function-name $FUNC_ARN --zip-file "fileb://$ZIP_FILE" > log/deploy-output-$TIMESTAMP.json
 rm $ZIP_FILE
