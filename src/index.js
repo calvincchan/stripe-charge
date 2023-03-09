@@ -1,4 +1,4 @@
-const AWS = require("aws-sdk");
+const { PublishCommand, SNSClient } = require("@aws-sdk/client-sns");
 const Stripe = require("stripe");
 
 exports.handler = async function (event) {
@@ -102,8 +102,8 @@ async function publishToTopic(snsParams) {
     console.log("🔥 SNS Triggered:");
     console.dir(snsParams);
   } else {
-    const sns = new AWS.SNS();
-    return sns.publish(snsParams).promise();
+    const sns = new SNSClient();
+    await sns.send(new PublishCommand(snsParams));
   }
 }
 
