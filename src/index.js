@@ -1,4 +1,4 @@
-const { PublishCommand, SNSClient } = require("@aws-sdk/client-sns");
+const AWS = require("aws-sdk");
 const Stripe = require("stripe");
 
 exports.handler = async function (event) {
@@ -36,14 +36,11 @@ exports.handler = async function (event) {
     body = JSON.stringify(body, null, 2);
   }
 
-  // TODO implement
-  const response = {
+  return {
     statusCode,
+    body,
     headers,
-    body: JSON.stringify('Hello from Lambda!'),
-    event
   };
-  return response;
 };
 
 /**
@@ -105,8 +102,8 @@ async function publishToTopic(snsParams) {
     console.log("🔥 SNS Triggered:");
     console.dir(snsParams);
   } else {
-    const sns = new SNSClient();
-    await sns.send(new PublishCommand(snsParams));
+    const sns = new AWS.SNS();
+    return sns.publish(snsParams).promise();
   }
 }
 
