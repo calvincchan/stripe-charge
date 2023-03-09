@@ -2,7 +2,6 @@
   "name": "stripe-charge",
   "version": "1.0.0",
   "description": "Handle a client side initiated Stripe charge on demand using AWS Lambda",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

@@ -1,7 +1,7 @@
-import { PublishCommand, SNSClient } from "@aws-sdk/client-sns";
-import Stripe from "stripe";
+const { PublishCommand, SNSClient } = require("@aws-sdk/client-sns");
+const Stripe = require("stripe");
 
-export async function handler(event) {
+exports.handler = async function (event) {
   const requestContext = event.requestContext;
   const httpMethod = requestContext.http.method;
   let body;
@@ -44,7 +44,7 @@ export async function handler(event) {
     event
   };
   return response;
-}
+};
 
 /**
  * Send a "Charge" request to Stripe
